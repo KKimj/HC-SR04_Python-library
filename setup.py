@@ -1,5 +1,6 @@
 import setuptools
 
+
 install_requires = [
     'pyserial==3.5',
 ]
@@ -8,15 +9,17 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup (
-    name = 'HC-SR04',
-    version = '0.0.1',
+    name = 'HC_SR04',
+    version = '0.0.2',
     license = 'GPL-3.0 License',
     description = 'HC-SR04 Python module via Serial protocol',
     author = 'KKimj',
     author_email = 'kkimj@hanyang.ac.kr',
     url = 'https://github.com/KKimj/HC-SR04_Python-library',
+
     install_requires=install_requires,
-    packages = setuptools.find_packages(),
+    #packages = setuptools.find_packages(),
+    packages = find_packages(exclude = ['docs', 'example']),
     classifiers = [
         # https://pypi.org/classifiers/
         "Programming Language :: Python :: 3",
@@ -25,4 +28,5 @@ setuptools.setup (
         "Topic :: Terminals :: Serial",
         "Natural Language :: Korean",
     ],
+    python_requires='>=3',
 )
