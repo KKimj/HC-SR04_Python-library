@@ -19,7 +19,8 @@ setuptools.setup (
 
     install_requires=install_requires,
     #packages = setuptools.find_packages(),
-    packages = find_packages(exclude = ['docs', 'example']),
+    packages_dir = {'src' : 'HC_SR04'},
+    packages = ['src'],
     classifiers = [
         # https://pypi.org/classifiers/
         "Programming Language :: Python :: 3",

@@ -1,6 +1,5 @@
 from serial import Serial
 
-
 class HC_SR04:
     def __init__(self, channel = 1, direction = "left", port = '/dev/ttyUSB0'):
         self.channel = channel
@@ -30,8 +29,28 @@ class HC_SR04:
                 print('Direction : %s'%(self.port))
 
 class HC_SR04_fair:
-    pass
-
+    def __init__(self, channel = 1, port_left = '/dev/ttyUSB0', port_right = '/dev/ttyUSB1'):
+        self.left = HC_SR04(channel, direction="left", port = port_left)
+        self.right = HC_SR04(channel, direction="right", port = port_right)
+    
+    def OpenSerial(self):
+        self.left.OpenSerial()
+        self.right.OpenSerial()
+    
+    def CloseSerial(self):
+        self.left.CloseSerial()
+        self.right.CloseSerial()
+    
+    def getData(self, separator=' '):
+        pass
+    
+    def Test(self):
+        print('Test method of HC_SR04_fair')
+        if self.left:
+            self.left.Test()
+        if self.right:
+            self.right.Test()
+        
 class HC_SR04_quad:
     leftPort = '/dev/ttyUSB0'
     rightPort = '/dev/ttyUSB1'
