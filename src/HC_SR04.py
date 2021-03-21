@@ -7,18 +7,34 @@ class HC_SR04:
         self.direction = direction
     
     def setSerialPort(self, port):
+        '''
+        Setter to Serial-port
+        '''
         self.port = port
 
     def OpenSerial(self):
+        '''
+        Open Serial connection
+        '''
         self.serial =  Serial(self.port, 115200, timeout = 3)
     
     def CloseSerial(self):
+        '''
+        Close Serial connection
+        '''
         self.serial.close()
 
     def getData(self, separator=' '):
+        '''
+        Getter to data from serial
+        Must call OpenSerial() before to use this method
+        '''
         return list(map(int, self.serial.readline().decode('utf-8').strip().split(separator)))
 
     def Test(self):
+        '''
+        Print out Sensors data
+        '''
         print('Test method of HC_SR04 Class')
         if self:
             if self.port:
@@ -30,9 +46,22 @@ class HC_SR04:
 
 class HC_SR04_fair:
     def __init__(self, channel = 1, port_left = '/dev/ttyUSB0', port_right = '/dev/ttyUSB1'):
-        self.left = HC_SR04(channel, direction="left", port = port_left)
-        self.right = HC_SR04(channel, direction="right", port = port_right)
+        '''
+        left : Left Sensors
+        right : Right Sensors
+        '''
+        self.channel = channel
+        self.left = HC_SR04(self.channel, direction="left", port = port_left)
+        self.right = HC_SR04(self.channel, direction="right", port = port_right)
     
+    def setSerialPort(self, port_left, port_right):
+        self.left.CloseSerial()
+        self.right.CloseSerial()
+        
+        self.left = HC_SR04(self.channel, direction="left", port = port_left)
+        self.right = HC_SR04(self.channel, direction="right", port = port_right)
+
+
     def OpenSerial(self):
         self.left.OpenSerial()
         self.right.OpenSerial()
@@ -41,10 +70,43 @@ class HC_SR04_fair:
         self.left.CloseSerial()
         self.right.CloseSerial()
     
+    def Switch(self):
+        '''
+        Swtich left to right, right to left
+        '''
+        tmp = self.left
+        self.left = self.right
+        self.right = tmp       
+    
     def getData(self, separator=' '):
-        pass
+        return self.left.getData() + self.right.getData()
+
+    def getLeftSensors(self):
+        return self.left.getData()
+    
+    def getRightSensors(self):
+        return self.right.getData()
+    
+    def getFront(self):
+        '''
+        Front Sensor are 1, 2, 3 ...
+        '''
+        return self.left.getData()[:self.channel//2]+ self.right.getData()[:self.channel//2]
+    
+    def getLeftside(self):
+        '''
+        Side sensors are ... 5 6 7 8
+        '''
+        return self.left.getData()[self.channel//2:]
+    
+    def getRightside(self):
+        return self.right.getData()[self.channel//2:]
+    
     
     def Test(self):
+        '''
+        Print out Sensors data
+        '''
         print('Test method of HC_SR04_fair')
         if self.left:
             self.left.Test()
@@ -105,4 +167,4 @@ class HC_SR04_quad:
     
     @staticmethod
     def getTotalData():
-        return HC_SR04_quad.getLeftSensors + HC_SR04_quad.getRightSensors
+        return HC_SR04_quad.getLeftSensors() + HC_SR04_quad.getRightSensors()

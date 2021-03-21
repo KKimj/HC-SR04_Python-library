@@ -10,7 +10,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup (
     name = 'HC_SR04',
-    version = '0.0.2',
+    version = '0.1.0',
     license = 'GPL-3.0 License',
     description = 'HC-SR04 Python module via Serial protocol',
     author = 'KKimj',
@@ -18,9 +18,10 @@ setuptools.setup (
     url = 'https://github.com/KKimj/HC-SR04_Python-library',
 
     install_requires=install_requires,
-    #packages = setuptools.find_packages(),
-    packages_dir = {'src' : 'HC_SR04'},
-    packages = ['src'],
+
+    py_modules=["tools.tester", "hc_sr04"],
+    package_dir={"": "src"},
+    packages=setuptools.find_packages(where="src"),
     classifiers = [
         # https://pypi.org/classifiers/
         "Programming Language :: Python :: 3",
