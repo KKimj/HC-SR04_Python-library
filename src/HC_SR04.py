@@ -42,7 +42,7 @@ class HC_SR04:
             if self.channel:
                 print('Channel : %s'%(self.channel))
             if self.direction:
-                print('Direction : %s'%(self.port))
+                print('Direction : %s'%(self.direction))
 
 class HC_SR04_fair:
     def __init__(self, channel = 1, port_left = '/dev/ttyUSB0', port_right = '/dev/ttyUSB1'):
