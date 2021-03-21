@@ -1,6 +1,11 @@
 # HC-SR04_Python-library
 HC-SR04_Python-library for PyPi
 
+## Install
+```
+$ pip install HC-SR04
+```
+
 ## Build
 ```
 $ python3 -m build
