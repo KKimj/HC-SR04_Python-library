@@ -10,7 +10,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup (
     name = 'HC_SR04',
-    version = '0.1.0',
+    version = '0.1.1',
     license = 'GPL-3.0 License',
     description = 'HC-SR04 Python module via Serial protocol',
     author = 'KKimj',
