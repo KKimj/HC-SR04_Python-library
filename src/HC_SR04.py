@@ -1,76 +1,53 @@
-from serial import Serial
+from tools.serial import _SerialDevice
 
-class HC_SR04:
-    def __init__(self, channel = 1, direction = "left", port = '/dev/ttyUSB0'):
+class HC_SR04(_SerialDevice):
+    def __init__(self, port = '/dev/ttyUSB0', baudrate = 115200, timeout = 3, channel = 1, open = False):
+        super().__init__(port=port, baudrate=baudrate, timeout=timeout, open=open)
         self.channel = channel
-        self.port = port
-        self.direction = direction
     
-    def setSerialPort(self, port):
-        '''
-        Setter to Serial-port
-        '''
-        self.port = port
 
-    def OpenSerial(self):
-        '''
-        Open Serial connection
-        '''
-        self.serial =  Serial(self.port, 115200, timeout = 3)
-    
-    def CloseSerial(self):
-        '''
-        Close Serial connection
-        '''
-        self.serial.close()
-
-    def getData(self, separator=' '):
+    def get(self, separator=' '):
         '''
         Getter to data from serial
         Must call OpenSerial() before to use this method
         '''
-        return list(map(int, self.serial.readline().decode('utf-8').strip().split(separator)))
+        return list(map(int, super().readline().strip().split(separator)))
 
-    def Test(self):
+    def test(self):
         '''
         Print out Sensors data
         '''
         print('Test method of HC_SR04 Class')
         if self:
-            if self.port:
-                print('Port : %s'%(self.port))
+            super().test()
             if self.channel:
                 print('Channel : %s'%(self.channel))
-            if self.direction:
-                print('Direction : %s'%(self.direction))
 
-class HC_SR04_fair:
-    def __init__(self, channel = 1, port_left = '/dev/ttyUSB0', port_right = '/dev/ttyUSB1'):
+class HC_SR04_fair(HC_SR04):
+    def __init__(self, port_left = '/dev/ttyUSB0', port_right = '/dev/ttyUSB1', baudrate = 115200, timeout = 3, channel = 1, open = False):
         '''
         left : Left Sensors
         right : Right Sensors
         '''
         self.channel = channel
-        self.left = HC_SR04(self.channel, direction="left", port = port_left)
-        self.right = HC_SR04(self.channel, direction="right", port = port_right)
+
+        self.left = HC_SR04(port = port_left, baudrate=baudrate, timeout=timeout, channel=channel, open=open)
+        self.right = HC_SR04(port = port_right, baudrate=baudrate, timeout=timeout, channel=channel, open=open)
     
-    def setSerialPort(self, port_left, port_right):
-        self.left.CloseSerial()
-        self.right.CloseSerial()
-        
-        self.left = HC_SR04(self.channel, direction="left", port = port_left)
-        self.right = HC_SR04(self.channel, direction="right", port = port_right)
+    def set_port(self, port_left, port_right, open = False):
+        self.left = self.left.set_port(port=port_left, open=open)
+        self.right = self.right.set_port(port=port_right, open=open)
 
 
-    def OpenSerial(self):
-        self.left.OpenSerial()
-        self.right.OpenSerial()
+    def open_serial(self):
+        self.left.open_serial()
+        self.right.open_serial()
     
-    def CloseSerial(self):
-        self.left.CloseSerial()
-        self.right.CloseSerial()
+    def close_serial(self):
+        self.left.close_serial()
+        self.right.close_serial()
     
-    def Switch(self):
+    def switch(self):
         '''
         Swtich left to right, right to left
         '''
@@ -78,93 +55,39 @@ class HC_SR04_fair:
         self.left = self.right
         self.right = tmp       
     
-    def getData(self, separator=' '):
-        return self.left.getData() + self.right.getData()
+    def get(self, separator=' '):
+        return self.left.get() + self.right.get()
 
-    def getLeftSensors(self):
-        return self.left.getData()
+    def get_left_sensors(self):
+        return self.left.get()
     
-    def getRightSensors(self):
-        return self.right.getData()
+    def get_right_sensors(self):
+        return self.right.get()
     
-    def getFront(self):
+    def get_front(self):
         '''
         Front Sensor are 1, 2, 3 ...
         '''
-        return self.left.getData()[:self.channel//2]+ self.right.getData()[:self.channel//2]
+        return self.left.get()[:self.channel//2]+ self.right.getData()[:self.channel//2]
     
-    def getLeftside(self):
+    def get_leftside(self):
         '''
         Side sensors are ... 5 6 7 8
         '''
-        return self.left.getData()[self.channel//2:]
+        return self.left.get()[self.channel//2:]
     
-    def getRightside(self):
-        return self.right.getData()[self.channel//2:]
+    def get_rightside(self):
+        return self.right.get()[self.channel//2:]
     
     
-    def Test(self):
+    def test(self):
         '''
         Print out Sensors data
         '''
-        print('Test method of HC_SR04_fair')
+        print('* Test method of HC_SR04_fair')
         if self.left:
-            self.left.Test()
+            print('** Left sensors')
+            self.left.test()
         if self.right:
-            self.right.Test()
-        
-class HC_SR04_quad:
-    leftPort = '/dev/ttyUSB0'
-    rightPort = '/dev/ttyUSB1'
-    
-    left_sensors = None
-    right_sensors = None
-    
-
-    @staticmethod
-    def setSerialPort(leftPort = '/dev/ttyUSB0', rightPort = '/dev/ttyUSB1'):
-        HC_SR04_quad.CloseSerial()
-
-        HC_SR04_quad.leftPort = leftPort
-        HC_SR04_quad.rightPort = rightPort
-
-        HC_SR04_quad.OpenSerial()
-                    
-    @staticmethod
-    def OpenSerial():
-        HC_SR04_quad.left_sensors = Serial(HC_SR04_quad.leftPort, 115200, timeout = 3)
-        HC_SR04_quad.right_sensors = Serial(HC_SR04_quad.rightPort, 115200, timeout = 3)
-    
-    @staticmethod
-    def CloseSerial():
-        HC_SR04_quad.left_sensors.close()
-        HC_SR04_quad.right_sensors.close()
-
-    @staticmethod
-    def Switch():
-        HC_SR04_quad.setSerialPort(leftPort=HC_SR04_quad.rightPort, rightPort=HC_SR04_quad.leftPort)
-    
-        
-    @staticmethod
-    def getLeftSensors():
-        return list(map(int, HC_SR04_quad.left_sensors.readline().decode('utf-8').strip().split()))
-
-    @staticmethod
-    def getRightSensors():
-        return list(map(int, HC_SR04_quad.right_sensors.readline().decode('utf-8').strip().split()))
-        
-    @staticmethod
-    def getFront():
-        return HC_SR04_quad.getLeftSensors()[:2] + HC_SR04_quad.getRightSensors()[:2]
-    
-    @staticmethod
-    def getLeftside():
-        return HC_SR04_quad.getLeftSensors()[2:]
-    
-    @staticmethod
-    def getRightside():
-        return HC_SR04_quad.getRightSensors()[2:]
-    
-    @staticmethod
-    def getTotalData():
-        return HC_SR04_quad.getLeftSensors() + HC_SR04_quad.getRightSensors()
+            print('** Right sensors')
+            self.right.test()
