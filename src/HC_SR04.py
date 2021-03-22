@@ -1,6 +1,6 @@
-from tools.serial import _SerialDevice
+from usbserial import USBSerial
 
-class HC_SR04(_SerialDevice):
+class HC_SR04(USBSerial):
     def __init__(self, port = '/dev/ttyUSB0', baudrate = 115200, timeout = 3, channel = 1, open = False):
         super().__init__(port=port, baudrate=baudrate, timeout=timeout, open=open)
         self.channel = channel
@@ -23,7 +23,7 @@ class HC_SR04(_SerialDevice):
             if self.channel:
                 print('Channel : %s'%(self.channel))
 
-class HC_SR04_fair(HC_SR04):
+class HC_SR04_fair():
     def __init__(self, port_left = '/dev/ttyUSB0', port_right = '/dev/ttyUSB1', baudrate = 115200, timeout = 3, channel = 1, open = False):
         '''
         left : Left Sensors
@@ -35,9 +35,10 @@ class HC_SR04_fair(HC_SR04):
         self.right = HC_SR04(port = port_right, baudrate=baudrate, timeout=timeout, channel=channel, open=open)
     
     def set_port(self, port_left, port_right, open = False):
-        self.left = self.left.set_port(port=port_left, open=open)
-        self.right = self.right.set_port(port=port_right, open=open)
-
+        self.left.port = port_left
+        self.right.port = port_right
+        if open:
+            self.open_serial()
 
     def open_serial(self):
         self.left.open_serial()
@@ -91,3 +92,42 @@ class HC_SR04_fair(HC_SR04):
         if self.right:
             print('** Right sensors')
             self.right.test()
+
+    def test_left(self):
+        '''
+        check left sensors
+        '''
+        if not self.left.serial:
+            if not self.left.open_serial():
+                return
+        while True:
+            result = self.left.get()
+            print(result)
+            if min(result) < 10:
+                print('Left : detect')
+                break
+
+
+    def test_right(self):
+        '''
+        check left sensors
+        '''
+        if not self.right.serial:
+            if not self.right.open_serial():
+                return
+        while True:
+            result = self.right.get()
+            print(result)
+            if min(result) < 10:
+                print('Right : detect')
+                break
+
+    def test_direction(self):
+        '''
+        check sensors direction
+        '''
+        print('** check left **')
+        self.test_left()
+        print('** check right **')
+        self.test_right()
+        

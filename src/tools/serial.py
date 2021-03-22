@@ -1,41 +1,52 @@
 from serial import Serial
 
-class importClass:
-    def test(self):
-        print('Hello')
-
 class _SerialDevice:
     def __init__(self, port, baudrate, timeout = 3, open = False):
         '''
         init method
         if open is set True then call open_serial()
         '''
-        self.port = port
-        self.baudrate = baudrate
-        self.timeout = timeout
+        self._port = port
+        self._baudrate = baudrate
+        self._timeout = timeout
         self.serial = None
         if open:
             self.open_serial()
 
-    def set_port(self, port, open = False):
+    @property
+    def port(self):
+        return self._port
+
+    @port.setter
+    def port(self, port):
         '''
-        set port method
-        if serial is opened then Close serial
-        if open is set True then call open_serial()
+        port setter method
+        if serial was opened
+        - Close serial
+        - Open serial
         '''
+        self._port = port
         if not self.serial:
             self.close_serial()
-        self.port = port
-        if open:
             self.open_serial()
     
+    @property
+    def baudrate(self):
+        return self._baudrate
+    
+    @property
+    def timeout(self):
+        return self._timeout
+
     def open_serial(self):
         if not self.serial:
             self.close_serial()
         try:
-            self.serial = Serial(self.port, self.baudrate, self.timeout)
+            self.serial = Serial(self._port, self._baudrate, self._timeout)
         except:
             print('Error : Can not open Serial, Retry!')
+            return False
+        return True
 
     def close_serial(self):
         if self.serial:
@@ -63,7 +74,7 @@ class _SerialDevice:
                 print('Serial is not opened')
             if self.port:
                 print('Port : %s'%(self.port))
-            if self.baudrate:
-                print('Baudrate : %s'%(self.baudrate))
-            if self.timeout:
-                print('Timeout : %s'%(self.timeout))
+            if self._baudrate:
+                print('Baudrate : %s'%(self._baudrate))
+            if self._timeout:
+                print('Timeout : %s'%(self._timeout))
