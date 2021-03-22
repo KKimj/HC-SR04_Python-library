@@ -6,6 +6,7 @@ install_requires = [
 ]
 
 try:
+    # $ pip install pypandoc
     import pypandoc
     long_description = pypandoc.convert('README.md', 'rst')
 except(IOError, ImportError):
