@@ -3,12 +3,22 @@ HC-SR04_Python-library for PyPi
 
 https://pypi.org/project/HC-SR04
 
-## Install
+## Getting Started
+
+### Prerequisites
+
+* Arduino board
+* HC_SR04 sensors
+* #### [porting arduino code to arduino board](https://github.com/KKimj/HC-SR04)
+    * https://github.com/KKimj/HC-SR04
+
+### Installation
 ```
 $ pip install HC-SR04
 ```
 
 ## Usage
+
 ### Import
 ```python
 from HC_SR04 import HC_SR04 as hc
