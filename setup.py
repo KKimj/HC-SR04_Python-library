@@ -1,7 +1,7 @@
 import setuptools
 
 install_requires = [
-    'USBSerial>=1.0.0',
+    'USBSerial>=1.0.1',
 ]
 
 try:
@@ -14,7 +14,7 @@ except(IOError, ImportError):
 
 setuptools.setup (
     name = 'HC_SR04',
-    version = '0.3.0',
+    version = '0.3.1',
     license = 'GPL-3.0 License',
     description = 'HC-SR04 Python module via Serial protocol',
     long_description = long_description,
