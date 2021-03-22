@@ -5,8 +5,12 @@ install_requires = [
     'pyserial==3.5',
 ]
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+try:
+    import pypandoc
+    long_description = pypandoc.convert('README.md', 'rst')
+except(IOError, ImportError):
+    long_description = open('README.md').read()
+
 
 setuptools.setup (
     name = 'HC_SR04',
@@ -14,7 +18,7 @@ setuptools.setup (
     license = 'GPL-3.0 License',
     description = 'HC-SR04 Python module via Serial protocol',
     long_description = long_description,
-    long_description_context_type = 'text/markdown',
+    long_description_content_type='text/markdown',
     author = 'KKimj',
     author_email = 'kkimj@hanyang.ac.kr',
     url = 'https://github.com/KKimj/HC-SR04_Python-library',
